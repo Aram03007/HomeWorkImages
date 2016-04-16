@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         image1 = (ImageView) findViewById(R.id.image_view1);
         image2 = (ImageView) findViewById(R.id.image_view2);
         image3 = (ImageView) findViewById(R.id.image);
-        
+
         drawView = (DrawView) findViewById(R.id.draw_view);
             new LoadTask(image).execute(PATH2);
             new LoadTask(image1).execute(PATH);
