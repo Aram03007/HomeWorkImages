@@ -60,7 +60,8 @@ public class LoadTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
+        imageView.setImageBitmap(bitmap);
+
     }
 
 

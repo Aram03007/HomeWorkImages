@@ -1,6 +1,9 @@
 package com.example.narek.homworkimages;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.IntEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,7 +11,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
@@ -18,7 +24,7 @@ import android.widget.ImageView;
 public class DrawView extends View {
 
 
-
+    private static final String TAG = "tag";
 
     public DrawView(Context context) {
         super(context);
@@ -32,47 +38,36 @@ public class DrawView extends View {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
+    }
+
 
     public  void animateImage(final ImageView imageView, final boolean t) {
-        final ValueAnimator animator = ValueAnimator.ofInt(0, 300);
 
 
-        animator.setDuration(1000);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                if (t) {
-                    float x = (float) (getMeasuredWidth() * 0.5 - imageView.getWidth() * 0.7);
-                    float y = (float) -(getMeasuredHeight() * 0.5 - imageView.getHeight() * 0.5);
-                    imageView.animate().translationXBy(x).translationYBy(y);
-
-                } else {
-                    float x = (float) (-getMeasuredWidth() * 0.5 + imageView.getWidth() * 0.7);
-                    float y = (float) -(getMeasuredHeight() * 0.5 - imageView.getHeight() * 0.5);
-                    imageView.animate().translationXBy((x)).translationYBy(y);
-                }
+        float x, y;
+        x = (float) (getMeasuredWidth() * 0.5 - imageView.getWidth() * 0.5);
+        y = (float) (getMeasuredHeight() * 0.5 - imageView.getHeight() * 0.5);
 
 
-            }
+        Log.d(TAG, "animateImage() called with: " + "imageView = [" + imageView + "], t = [" + t + "]");
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imageView.animate().scaleXBy(2);
-                imageView.animate().scaleYBy(2);
-            }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
 
-            }
+        ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(imageView, "scaleX", imageView.getScaleX(), 2 * imageView.getScaleX());
+        scaleXAnimator.setStartDelay(300);
+        ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(imageView, "scaleY", imageView.getScaleY(), 2 * imageView.getScaleY());
+        scaleYAnimator.setStartDelay(300);
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.start();
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet
+                .play(ObjectAnimator.ofFloat(imageView, "x", imageView.getX(), x))
+                .with(ObjectAnimator.ofFloat(imageView, "y", imageView.getY(), y))
+                .before(scaleXAnimator)
+                .before(scaleYAnimator);
+        animatorSet.start();
 
 
 
@@ -80,35 +75,23 @@ public class DrawView extends View {
 
     public void animateImageBack(final ImageView imageView ) {
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, 300);
-        animator.setDuration(1000);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                imageView.animate().scaleX(1);
-                imageView.animate().scaleY(1);
+
+        ObjectAnimator translateXAnimator = ObjectAnimator.ofFloat(imageView, "translationX", imageView.getTranslationX(), 0);
+        translateXAnimator.setStartDelay(300);
+        ObjectAnimator translateYAnimator = ObjectAnimator.ofFloat(imageView, "translationY", imageView.getTranslationY(), 0);
+        translateYAnimator.setStartDelay(300);
 
 
-            }
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet
+                .play(ObjectAnimator.ofFloat(imageView, "scaleX", imageView.getScaleX(), imageView.getScaleX() / 2))
+                .with(ObjectAnimator.ofFloat(imageView, "scaleY", imageView.getScaleY(), imageView.getScaleY() / 2))
+                .before(translateXAnimator)
+                .before(translateYAnimator);
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imageView.animate().translationX(0).translationY(0);
+        animatorSet.start();
 
-            }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.start();
 
 
 

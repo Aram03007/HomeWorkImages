@@ -49,22 +49,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         image1 = (ImageView) findViewById(R.id.image_view1);
         image2 = (ImageView) findViewById(R.id.image_view2);
         image3 = (ImageView) findViewById(R.id.image);
-
-
-        assert image != null;
+        
         drawView = (DrawView) findViewById(R.id.draw_view);
-
-        try {
-            image.setImageBitmap(new LoadTask(image).execute(PATH2).get());
-            image1.setImageBitmap(new LoadTask(image).execute(PATH).get());
-            image2.setImageBitmap(new LoadTask(image).execute(PATH2).get());
-            image3.setImageBitmap(new LoadTask(image).execute(PATH3).get());
+            new LoadTask(image).execute(PATH2);
+            new LoadTask(image1).execute(PATH);
+            new LoadTask(image2).execute(PATH3);
+            new LoadTask(image3).execute(PATH3);
 
 
 
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+
 
 
         image.setOnClickListener(this);
@@ -74,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+
 
 
     @Override
